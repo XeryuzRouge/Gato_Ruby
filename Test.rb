@@ -3,8 +3,9 @@ class Prepare_Board
 
   def initialize
     @boxes = {1 => "   ", 2 => "   ", 3 => "   ", 4 => "   ",
-             5 => "   ", 6 => "   ", 7 => "   ", 8 => "   ", 9 => "   ", }
+              5 => "   ", 6 => "   ", 7 => "   ", 8 => "   ", 9 => "   ", }
     @turn = " X "
+    @turns = 0
 
   end
 
@@ -30,9 +31,24 @@ class Prepare_Board
 
   def play(selected_box)
 
-    @boxes[selected_box.to_i] = @turn
+    if @boxes[selected_box.to_i] == "   "
+      @boxes[selected_box.to_i] = @turn
+      @turns += 1
+    else
+      print "Casilla invalida, ", "|", @boxes[selected_box], "|", "\n"
+    end
     drawBoard
+    @turn=swapTurn(@turn)
 
+  end
+
+  def swapTurn(currentTurn)
+    if currentTurn == " X "
+      currentTurn = " O "
+    else
+      currentTurn = " X "
+    end
+    return currentTurn
   end
 
 end
@@ -41,8 +57,6 @@ main = Prepare_Board.new
 
 main.drawBoard
 
-for i in 0..8
-
+begin
   main.play(gets)
-
-end
+end while main.instance_variable_get(:@turns) < 9 
