@@ -6,9 +6,11 @@ class Game_Values
   attr_accessor :lastTurn
   attr_accessor :playsCounter
   attr_accessor :winCombos
+  attr_accessor :VS
 
   def initialize
 
+    @VS = "Player"
     @turn = " X "
     @lastTurn = " X "
     @playsCounter = 0
@@ -27,13 +29,13 @@ class Draw_Board
 
   def drawBoard(boxes)
 
-    box = 0
+    box = 6
     boardRow = 0
 
     for i in 0..4
       if boardRow == 0
          print boxes[box+1], "║", boxes[box+2], "║", boxes[box+3], "\n"
-         box +=3
+         box -=3
          boardRow = 1
       else
          print "═══", "╬═══", "╬═══", "\n"
@@ -82,7 +84,7 @@ class CheckForWinner
         j += 1
       end
       if currentCombos[i] == [player, player, player]
-       return "Ganador: "
+       return true
       end
       i += 1
     end
@@ -90,11 +92,49 @@ class CheckForWinner
 
 end
 
+class Interface
+
+  def drawInterface(turn)
+  print "\n", "turno de:", turn, "\n", "\n"
+  print "\n", "Selecciona una casilla: "
+  end
+
+end
+
+class CPU
+
+  def move(combos)
+    i = 0
+    j = 0
+    rowOf_O = 0
+    tempBox = 0
+    while i < combos.length
+      j = 0
+      rowOf_O = 0
+      while j < combos[j].length
+        if combos[i][j] == " O "
+          rowOf_O += 1
+        elsif combos[i][j] != " X "
+          tempBox = combos[i][j]
+        end
+        j += 1
+      end
+      if rowOf_O == 2
+        return tempBox
+      end
+      i += 1
+    end
+    return tempBox
+  end
+
+end
 
 values = Game_Values.new
 main = GamePlay.new
 paintBrush = Draw_Board.new
-checker = CheckForWinner.new
+checkForWinner = CheckForWinner.new
+interface = Interface.new
+cpu = CPU.new
 
 play_s_Results = []
 
@@ -103,21 +143,25 @@ values
 begin
 
   system "cls"
-  print "turno de:", values.turn, "\n", "\n"
   paintBrush.drawBoard(values.boxes)
-  print "\n", "Selecciona una casilla: "
-
+  interface.drawInterface(values.turn)
 
   while values.turn == values.lastTurn
-    play_s_Results = main.play(gets, values.boxes, values.turn)
-    values.turn = play_s_Results[0]
+     if values.turn==" X " 
+      play_s_Results = main.play(gets, values.boxes, values.turn)
+    else
+      play_s_Results = main.play(cpu.move(values.winCombos), values.boxes, values.turn)
+    end
+      values.turn = play_s_Results[0]
   end
 
-  ganador=checker.checkIt(values.winCombos, play_s_Results[1], values.lastTurn)
+  ganador=checkForWinner.checkIt(values.winCombos, play_s_Results[1], values.lastTurn)
 
   if ganador != nil
     values.playsCounter = 9
-    print "Ganador: ", values.lastTurn
+    system "cls"
+    print "Ganador: ", values.lastTurn, "\n", "\n"
+    paintBrush.drawBoard(values.boxes)
   end
 
   values.lastTurn = values.turn
