@@ -54,7 +54,7 @@ class GamePlay
       boxes[selected_box.to_i] = turn
       turn=swapTurn(turn)
     else
-      print "Casilla invalida", "\n"
+      print "Casilla invalida", boxes[selected_box.to_i], "\n"
     end
     return turn, selected_box.to_i
   end
@@ -103,28 +103,56 @@ end
 
 class CPU
 
-  def move(combos)
-    i = 0
-    j = 0
-    rowOf_O = 0
+  attr_accessor :currentCombos
+
+  def move
+    row = 0
+    o_Counter = 0
+    playOption = 0
     tempBox = 0
-    while i < combos.length
-      j = 0
-      rowOf_O = 0
-      while j < combos[j].length
-        if combos[i][j] == " O "
-          rowOf_O += 1
-        elsif combos[i][j] != " X "
-          tempBox = combos[i][j]
-        end
-        j += 1
+    while row < currentCombos.length
+      if checkRow(row) != nil
+        playOption=checkRow(row)
       end
-      if rowOf_O == 2
+      tempBox = playOption[1]
+      if playOption[0] >= 3
         return tempBox
       end
-      i += 1
+      row += 1
     end
+    tempBox = playOption[1]
     return tempBox
+  end
+
+  def checkRow(row)
+    tempBoxRow = 0
+    rowElement = 0
+    o_Counter = 0
+    x_Counter = 0
+    boxContent = 0
+
+      while rowElement < currentCombos[rowElement].length
+        if currentCombos[row][rowElement] == " O "
+          o_Counter += 1
+        elsif currentCombos[row][rowElement] == " X "
+          x_Counter += 1
+        else
+          tempBoxRow = currentCombos[row][rowElement]
+        end
+        rowElement += 1
+      end
+
+      if tempBoxRow != 0
+        if o_Counter == 2
+          return 4, tempBoxRow
+        elsif x_Counter == 2
+          return 3, tempBoxRow
+        else 
+          return 1, tempBoxRow
+        end
+      else
+        return nil
+      end
   end
 
 end
@@ -150,7 +178,8 @@ begin
      if values.turn==" X " 
       play_s_Results = main.play(gets, values.boxes, values.turn)
     else
-      play_s_Results = main.play(cpu.move(values.winCombos), values.boxes, values.turn)
+      cpu.currentCombos=values.winCombos
+      play_s_Results = main.play(cpu.move, values.boxes, values.turn)
     end
       values.turn = play_s_Results[0]
   end
