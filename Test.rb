@@ -6,11 +6,11 @@ class Game_Values
   attr_accessor :lastTurn
   attr_accessor :playsCounter
   attr_accessor :winCombos
-  attr_accessor :VS
+  attr_accessor :vs
 
-  def initialize
+  def redo
 
-    @VS = "Player"
+    @vs = "Player"
     @turn = " X "
     @lastTurn = " X "
     @playsCounter = 0
@@ -108,20 +108,33 @@ class CPU
   def move
     row = 0
     o_Counter = 0
-    playOption = 0
+    playOptions = []
     tempBox = 0
+
     while row < currentCombos.length
       if checkRow(row) != nil
-        playOption=checkRow(row)
-      end
-      tempBox = playOption[1]
-      if playOption[0] >= 3
-        return tempBox
+        playOptions.insert(-1, checkRow(row))
+        print "rows: ", row
       end
       row += 1
     end
-    tempBox = playOption[1]
+    tempBox = checkPlayOptions(playOptions)
     return tempBox
+  end
+
+  def checkPlayOptions(possiblePlays)
+    tempBox = 0
+    play = 0
+
+    while play < possiblePlays.length
+      if possiblePlays[play][0] >= 3
+      tempBox = possiblePlays[play]
+      return tempBox[1]
+      end
+      play += 1
+    end
+    tempBox = possiblePlays.sample
+    return tempBox[1]
   end
 
   def checkRow(row)
@@ -129,30 +142,29 @@ class CPU
     rowElement = 0
     o_Counter = 0
     x_Counter = 0
-    boxContent = 0
 
-      while rowElement < currentCombos[rowElement].length
-        if currentCombos[row][rowElement] == " O "
-          o_Counter += 1
-        elsif currentCombos[row][rowElement] == " X "
-          x_Counter += 1
-        else
-          tempBoxRow = currentCombos[row][rowElement]
-        end
-        rowElement += 1
-      end
-
-      if tempBoxRow != 0
-        if o_Counter == 2
-          return 4, tempBoxRow
-        elsif x_Counter == 2
-          return 3, tempBoxRow
-        else 
-          return 1, tempBoxRow
-        end
+    while rowElement < currentCombos[rowElement].length
+      if currentCombos[row][rowElement] == " O "
+        o_Counter += 1
+      elsif currentCombos[row][rowElement] == " X "
+        x_Counter += 1
       else
-        return nil
+        tempBoxRow = currentCombos[row][rowElement]
       end
+      rowElement += 1
+    end
+
+    if tempBoxRow != 0
+      if o_Counter == 2
+        return 4, tempBoxRow
+      elsif x_Counter == 2
+        return 3, tempBoxRow
+      else 
+        return 1, tempBoxRow
+      end
+    else
+      return nil
+    end
   end
 
 end
@@ -166,22 +178,30 @@ cpu = CPU.new
 
 play_s_Results = []
 
-values
+values.redo
+system "cls"
+print "Player vs Player (1) \nPlayer vs CPU (2) \n"
+         values.vs = gets.to_i
 
 begin
 
   system "cls"
+  print values.playsCounter, "\n"
   paintBrush.drawBoard(values.boxes)
   interface.drawInterface(values.turn)
 
   while values.turn == values.lastTurn
-     if values.turn==" X " 
-      play_s_Results = main.play(gets, values.boxes, values.turn)
+    if values.vs == 2
+      if values.turn == " X " 
+        play_s_Results = main.play(gets, values.boxes, values.turn)
+      else
+        cpu.currentCombos=values.winCombos
+        play_s_Results = main.play(cpu.move, values.boxes, values.turn)
+      end
     else
-      cpu.currentCombos=values.winCombos
-      play_s_Results = main.play(cpu.move, values.boxes, values.turn)
+      play_s_Results = main.play(gets, values.boxes, values.turn)
     end
-      values.turn = play_s_Results[0]
+    values.turn = play_s_Results[0]
   end
 
   ganador=checkForWinner.checkIt(values.winCombos, play_s_Results[1], values.lastTurn)
