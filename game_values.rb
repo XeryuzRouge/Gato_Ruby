@@ -1,14 +1,21 @@
 
 class GameValues
 
-  attr_accessor :score_x
-  attr_accessor :score_o
+  attr_accessor :x_score
+  attr_accessor :o_score
+  attr_accessor :tie_counter
   attr_accessor :boxes
   attr_accessor :turn
   attr_accessor :last_turn
   attr_accessor :plays_counter
   attr_accessor :win_combos
   attr_accessor :vs
+
+  def initialize
+    @x_score = 0
+    @o_score = 0
+    @tie_counter = 0
+  end
 
   def redo
 
