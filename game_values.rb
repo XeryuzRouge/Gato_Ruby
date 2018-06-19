@@ -18,7 +18,6 @@ class GameValues
   end
 
   def redo
-
     @turn = " X "
     @last_turn = " X "
     @plays_counter = 0

@@ -56,15 +56,13 @@ class CPU
   end
 
   def chosen_box(temp_box_row, o_counter, x_counter)
-      if o_counter == 2
-        return 4, temp_box_row
-      elsif x_counter == 2
-        return 3, temp_box_row
-      else 
-        return 1, temp_box_row
-      end
-    else
-      return nil
+    if o_counter == 2
+      return 4, temp_box_row
+    elsif x_counter == 2
+      return 3, temp_box_row
+    else 
+      return 1, temp_box_row
+    end
   end
-
+  
 end
