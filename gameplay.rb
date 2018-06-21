@@ -3,14 +3,16 @@ class GamePlay
   def play(selected_box, boxes, turn)
     if boxes[selected_box.to_i] == "   "
       boxes[selected_box.to_i] = turn
-      turn=swap_turn(turn)
-    elsif selected_box.chomp.eql? "r"
+      turn = swap_turn(turn)
+    elsif selected_box.chomp. == "r"
        return turn, selected_box.chomp
     else
       print "Casilla invalida: " + selected_box
     end
     return turn, selected_box.to_i
   end
+
+  private
 
   def swap_turn(current_turn)
     if current_turn == " X "

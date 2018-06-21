@@ -19,6 +19,8 @@ class CPU
     return temp_box
   end
 
+  private
+
   def check_play_options(possible_plays)
     temp_box = 0
     play = 0
@@ -64,5 +66,5 @@ class CPU
       return 1, temp_box_row
     end
   end
-  
+
 end

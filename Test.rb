@@ -32,7 +32,7 @@ begin
         if values.turn == " X " 
           plays_results = main.play(gets, values.boxes, values.turn)
         else
-          cpu.current_combos=values.win_combos
+          cpu.current_combos = values.win_combos
           plays_results = main.play(cpu.move, values.boxes, values.turn)
         end
       else
@@ -46,7 +46,7 @@ begin
       values.turn = plays_results[0] if plays_results[1] != "r"
     end
 
-    winner=check_for_winner.check_it(values.win_combos, plays_results[1], values.last_turn)
+    winner = check_for_winner.check_it(values.win_combos, plays_results[1], values.last_turn)
 
     values.plays_counter += 1
 
