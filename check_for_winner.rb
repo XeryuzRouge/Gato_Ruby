@@ -1,15 +1,24 @@
 class CheckForWinner
 
-  def check_it(current_combos, selected_box, player)
+  attr_accessor :win_combos
+
+  def redo
+    @win_combos = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], 
+                 [2, 5, 8], [3, 6, 9], [1, 5, 9], [7, 5, 3]]
+  end
+
+  def check_it(selected_box, player)
+
+    print "checando: ", @win_combos
 
     i = 0
-    while i < current_combos.length
+    while i < @win_combos.length
     j = 0
-      while j < current_combos[i].length
-        current_combos[i][j] = player if current_combos[i][j] == selected_box
+      while j < @win_combos[i].length
+        @win_combos[i][j] = player if @win_combos[i][j] == selected_box
         j += 1
       end
-      return true if current_combos[i] == [player, player, player]
+      return true if @win_combos[i] == [player, player, player]
       i += 1
     end
   end

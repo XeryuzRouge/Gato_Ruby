@@ -1,15 +1,26 @@
 class GamePlay
 
-  def play(selected_box, boxes, turn)
+  attr_accessor :turn
+  attr_accessor :last_turn
+  attr_accessor :plays_counter
+
+  def redo
+    @turn = " X "
+    @last_turn = " X "
+    @plays_counter = 0
+
+  end
+
+  def play(selected_box, boxes)
     if boxes[selected_box.to_i] == "   "
-      boxes[selected_box.to_i] = turn
-      turn = swap_turn(turn)
+      boxes[selected_box.to_i] = @turn
+      @turn = swap_turn(@turn)
     elsif selected_box.chomp. == "r"
-       return turn, selected_box.chomp
+       return @turn, selected_box.chomp
     else
       print "Casilla invalida: " + selected_box
     end
-    return turn, selected_box.to_i
+    return @turn, selected_box.to_i
   end
 
   private
