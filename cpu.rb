@@ -11,7 +11,6 @@ class CPU
     while row < current_combos.length
       if check_row(row) != nil
         play_options.insert(-1, check_row(row))
-        print "rows: #{row}"
       end
       row += 1
     end

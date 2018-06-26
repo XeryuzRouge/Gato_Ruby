@@ -5,7 +5,7 @@ class Interface
   attr_accessor :tie_score
   attr_accessor :vs
 
-  def initialize
+  def reset
     @x_score = 0
     @o_score = 0
     @tie_score = 0
@@ -29,7 +29,6 @@ class Interface
 
   def draw_scoreboard
     print "Marcador:\nX=#{x_score}  O=#{o_score}\nEmpates=#{tie_score}\n\n"
-    #print "#{values.plays_counter}\n"
   end
 
   def results(winner)

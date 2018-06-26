@@ -4,7 +4,7 @@ class GamePlay
   attr_accessor :last_turn
   attr_accessor :plays_counter
 
-  def redo
+  def reset
     @turn = " X "
     @last_turn = " X "
     @plays_counter = 0
