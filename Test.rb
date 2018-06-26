@@ -1,70 +1,75 @@
 
-require_relative 'game_values'
 require_relative 'draw_board'
 require_relative 'gameplay'
 require_relative 'check_for_winner'
 require_relative 'interface'
 require_relative 'cpu'
 
-values = GameValues.new
-main = GamePlay.new
-paint_brush = DrawBoard.new
+def reset_values (*args)
+  i = 0
+  while i < args.length
+    args[i].reset
+    i += 1
+  end
+end
+
+gameplay = GamePlay.new
+the_board = TheBoard.new
 check_for_winner = CheckForWinner.new
 interface = Interface.new
 cpu = CPU.new
 
 plays_results = []
 
-values.redo
-values.vs = interface.main_menu
+reset_values(gameplay, check_for_winner, the_board, interface)
+
+interface.vs = interface.gameplay
 
 begin
 
   loop do
     system "cls"
-    print "Marcador:\nX=#{values.x_score}  O=#{values.o_score}\nEmpates=#{values.tie_counter}\n\n"
-    print "#{values.plays_counter}\n"
-    paint_brush.draw_board(values.boxes)
-    interface.draw_interface(values.turn)
+    interface.draw_scoreboard
+    the_board.draw_it
+    interface.draw_interface(gameplay.turn)
 
-    while values.turn == values.last_turn
-      if values.vs == 2
-        if values.turn == " X " 
-          plays_results = main.play(gets, values.boxes, values.turn)
+    while gameplay.turn == gameplay.last_turn
+      if interface.vs == 2
+        if gameplay.turn == " X " 
+          plays_results = gameplay.play(gets, the_board.boxes)
         else
-          cpu.current_combos = values.win_combos
-          plays_results = main.play(cpu.move, values.boxes, values.turn)
+          cpu.current_combos = check_for_winner.win_combos
+          plays_results = gameplay.play(cpu.move, the_board.boxes)
         end
       else
-        plays_results = main.play(gets, values.boxes, values.turn)
+        plays_results = gameplay.play(gets, the_board.boxes)
       end
       if plays_results[1] == "r"
-        values.redo
-        values.vs = interface.main_menu
+        reset_values(gameplay, check_for_winner, the_board, interface)
+        interface.vs = interface.main_menu
         break
       end
-      values.turn = plays_results[0] if plays_results[1] != "r"
+      gameplay.turn = plays_results[0] if plays_results[1] != "r"
     end
 
-    winner = check_for_winner.check_it(values.win_combos, plays_results[1], values.last_turn)
+    winner = check_for_winner.check_it(plays_results[1], gameplay.last_turn)
 
-    values.plays_counter += 1
+    gameplay.plays_counter += 1
 
     if winner != nil
       system "cls"
-      print "Ganador: #{values.last_turn}\n\n"
-      values.x_score += 1 if values.last_turn == " X "
-      values.o_score += 1 if values.last_turn == " O "
-      paint_brush.draw_board(values.boxes)
-      values.redo
+      print "Ganador: #{gameplay.last_turn}\n\n"
+      interface.results(gameplay.last_turn)
+      the_board.draw_it
+      reset_values(gameplay, check_for_winner, the_board)
     end
 
-    if values.plays_counter >= 9
-      values.tie_counter += 1
-      values.redo
+    if gameplay.plays_counter >= 9
+      interface.results("tie")
+      reset_values(gameplay, check_for_winner, the_board)
     end
 
-    values.last_turn = values.turn   
+    gameplay.last_turn = gameplay.turn   
   end
 
 end
