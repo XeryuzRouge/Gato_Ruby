@@ -16,14 +16,19 @@ class Interface
     print "\nSelecciona una casilla: "
   end
 
-  def main_menu
+  def main_menu(reset_errors)
     choice = 1
+    @vs = 0
     loop do
       system "cls"
+      print "Dear developer:\nThere's no reset method in #{reset_errors}. \n\n" if reset_errors.any?
       print "Selecciona una opción valida\n\n" if choice != 1 && choice != 2
       print "Player vs Player (1) \nPlayer vs CPU (2) \n"
       choice = gets.to_i
-      return choice if choice == 1 || choice == 2
+      if choice == 1 || choice == 2
+        @vs = choice
+        break 
+      end
     end
   end
 
