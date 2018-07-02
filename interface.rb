@@ -5,6 +5,10 @@ class Interface
   attr_accessor :tie_score
   attr_accessor :vs
 
+  def initialize
+    reset
+  end
+
   def reset
     @x_score = 0
     @o_score = 0
@@ -16,16 +20,15 @@ class Interface
     print "\nSelecciona una casilla: "
   end
 
-  def main_menu(reset_errors)
+  def main_menu
     choice = 1
     @vs = 0
     loop do
       system "cls"
-      print "Dear developer:\nThere's no reset method in #{reset_errors}. \n\n" if reset_errors.any?
-      print "Selecciona una opción valida\n\n" if choice != 1 && choice != 2
-      print "Player vs Player (1) \nPlayer vs CPU (2) \n"
+      print "Selecciona una opción valida\n\n" if choice != 1 && choice != 2 && choice != 3
+      print "Player vs Player (1) \nPlayer vs CPU (2) \nCPU vs CPU (3) \n"
       choice = gets.to_i
-      if choice == 1 || choice == 2
+      if choice == 1 || choice == 2 || choice == 3
         @vs = choice
         break 
       end

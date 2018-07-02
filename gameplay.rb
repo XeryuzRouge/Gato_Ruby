@@ -4,19 +4,22 @@ class GamePlay
   attr_accessor :last_turn
   attr_accessor :plays_counter
 
+  def initialize
+    reset
+  end
+
   def reset
     @turn = " X "
     @last_turn = " X "
     @plays_counter = 0
-
   end
 
   def play(selected_box, boxes)
     if boxes[selected_box.to_i] == "   "
       boxes[selected_box.to_i] = @turn
       @turn = swap_turn(@turn)
-    elsif selected_box.chomp. == "r"
-       return @turn, selected_box.chomp
+#      elsif selected_box.chomp == "q"
+#        exit
     else
       print "Casilla invalida: " + selected_box
     end

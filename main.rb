@@ -1,47 +1,60 @@
 
+require 'io/console' 
 require_relative 'draw_board'
 require_relative 'gameplay'
 require_relative 'check_for_winner'
 require_relative 'interface'
 require_relative 'cpu'
 require_relative 'reset'
+require_relative 'exit' 
 
 gameplay = GamePlay.new
-the_board = TheBoard.new
+board = Board.new
 check_for_winner = CheckForWinner.new
 interface = Interface.new
 cpu = CPU.new
 reset = Reset.new
+laexit = Laexit.new
+KEY_Esc = 27
+      $stdout.sync=true
+    
+      i=0
+     # laexit = Thread.new{Laexit.new}Laexit.new
 
 plays_results = []
-reset_errors = []
-
-reset_errors = reset.values(gameplay, cpu, check_for_winner, the_board, interface)
-
-interface.main_menu(reset_errors)
+interface.main_menu
+char = 0
 
 begin
 
   loop do
+  laexit.capture_key do |key|
+           if key == KEY_Esc
+              print "hola"
+             exit
+            end
+          end
     system "cls"
     interface.draw_scoreboard
-    the_board.draw_it
+    board.draw_it
     interface.draw_interface(gameplay.turn)
 
     while gameplay.turn == gameplay.last_turn
-      if interface.vs == 2
-        if gameplay.turn == " X " 
-          plays_results = gameplay.play(gets, the_board.boxes)
+      if interface.vs == 2 || interface.vs == 3
+        if gameplay.turn == " X " && interface.vs == 2
+          char = STDIN.getch
+          plays_results = gameplay.play(char, board.boxes)
         else
           cpu.current_combos = check_for_winner.win_combos
-          plays_results = gameplay.play(cpu.move, the_board.boxes)
+          plays_results = gameplay.play(cpu.move, board.boxes)
         end
-      else
-        plays_results = gameplay.play(gets, the_board.boxes)
+      elsif interface.vs == 1
+        char = STDIN.getch
+        plays_results = gameplay.play(char, board.boxes)
       end
       if plays_results[1] == "r"
-        reset_errors = reset.values(gameplay, check_for_winner, the_board, interface)
-        interface.main_menu(reset_errors)
+        reset.values(gameplay, check_for_winner, board, interface)
+        interface.main_menu
         break
       end
       gameplay.turn = plays_results[0] if plays_results[1] != "r"
@@ -55,13 +68,13 @@ begin
       system "cls"
       print "Ganador: #{gameplay.last_turn}\n\n"
       interface.results(gameplay.last_turn)
-      the_board.draw_it
-      reset_errors = reset.values(gameplay, check_for_winner, the_board, cpu)
+      board.draw_it
+      reset.values(gameplay, check_for_winner, board)
     end
 
     if gameplay.plays_counter >= 9
       interface.results("tie")
-      reset_errors = reset.values(gameplay, check_for_winner, the_board, cpu)
+      reset.values(gameplay, check_for_winner, board)
     end
 
     gameplay.last_turn = gameplay.turn   

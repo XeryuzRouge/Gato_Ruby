@@ -25,6 +25,7 @@ class CPU
     play = 0
 
     while play < possible_plays.length
+      sleep(0.5)
       if possible_plays[play][0] >= 3
         temp_box = possible_plays[play]
         return temp_box[1]
