@@ -14,12 +14,11 @@ check_for_winner = CheckForWinner.new
 interface = Interface.new
 cpu = CPU.new
 reset = Reset.new
-laexit = Laexit.new
+exit_program = ExitLogic.new
 KEY_Esc = 27
       $stdout.sync=true
     
       i=0
-     # laexit = Thread.new{Laexit.new}Laexit.new
 
 plays_results = []
 interface.main_menu
@@ -28,12 +27,12 @@ char = 0
 begin
 
   loop do
-  laexit.capture_key do |key|
-           if key == KEY_Esc
-              print "hola"
-             exit
-            end
-          end
+    exit_program.capture_key do |key|
+      if key == KEY_Esc
+        reset.values(gameplay, check_for_winner, board, interface)
+        interface.main_menu
+      end
+    end
     system "cls"
     interface.draw_scoreboard
     board.draw_it
@@ -52,12 +51,7 @@ begin
         char = STDIN.getch
         plays_results = gameplay.play(char, board.boxes)
       end
-      if plays_results[1] == "r"
-        reset.values(gameplay, check_for_winner, board, interface)
-        interface.main_menu
-        break
-      end
-      gameplay.turn = plays_results[0] if plays_results[1] != "r"
+      gameplay.turn = plays_results[0] if plays_results[1]
     end
 
     winner = check_for_winner.check_it(plays_results[1], gameplay.last_turn)
