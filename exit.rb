@@ -9,4 +9,19 @@ require 'Win32API'
              yield @@getch.call
          end
       end
+
+      def salte 
+
+        loop do
+          capture_key do |key|
+          if key == KEY_Esc
+
+            return 27
+
+          else 
+          return key.chr
+       end 
+      end
     end
+  end
+end

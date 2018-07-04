@@ -23,39 +23,57 @@ KEY_Esc = 27
 plays_results = []
 interface.main_menu
 char = 0
+timer = 0
+main_menu = 0
+
+thr = Thread.new { 
+  loop do
+  while interface.vs == 3 do
+    exit_program.capture_key do |key|
+      if key == KEY_Esc
+        char = 27
+      end
+    end 
+  end
+end
+  }
 
 begin
 
   loop do
-    exit_program.capture_key do |key|
-      if key == KEY_Esc
-        reset.values(gameplay, check_for_winner, board, interface)
-        interface.main_menu
-      end
-    end
+
     system "cls"
     interface.draw_scoreboard
     board.draw_it
     interface.draw_interface(gameplay.turn)
 
     while gameplay.turn == gameplay.last_turn
-      if interface.vs == 2 || interface.vs == 3
-        if gameplay.turn == " X " && interface.vs == 2
-          char = STDIN.getch
-          plays_results = gameplay.play(char, board.boxes)
-        else
-          cpu.current_combos = check_for_winner.win_combos
-          plays_results = gameplay.play(cpu.move, board.boxes)
+
+      if interface.vs == 1 || (interface.vs == 2 && gameplay.turn == " X ")
+        char = exit_program.salte
+        if char == 27
+          reset.values(gameplay, check_for_winner, board, interface)
+          interface.main_menu
+          char = 0
+          break
         end
-      elsif interface.vs == 1
-        char = STDIN.getch
         plays_results = gameplay.play(char, board.boxes)
+      elsif interface.vs == 3 || interface.vs == 2 
+        cpu.current_combos = check_for_winner.win_combos
+        plays_results = gameplay.play(cpu.move, board.boxes)
+        if char == 27
+          reset.values(gameplay, check_for_winner, board, interface)
+          interface.main_menu
+          char = 0
+          break
+        end
       end
+
       gameplay.turn = plays_results[0] if plays_results[1]
+
     end
 
     winner = check_for_winner.check_it(plays_results[1], gameplay.last_turn)
-
     gameplay.plays_counter += 1
 
     if winner != nil
@@ -71,7 +89,8 @@ begin
       reset.values(gameplay, check_for_winner, board)
     end
 
-    gameplay.last_turn = gameplay.turn   
+    gameplay.last_turn = gameplay.turn
+
   end
 
 end
