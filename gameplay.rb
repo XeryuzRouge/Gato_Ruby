@@ -18,13 +18,8 @@ class GamePlay
     if boxes[selected_box.to_i] == "   "
       boxes[selected_box.to_i] = @turn
       @turn = swap_turn(@turn)
-      elsif selected_box.chomp. == "q"
-        exit
-      elsif selected_box.chomp. == "escape"
-        return @turn, selected_box.chomp
-      
     else
-      print "Casilla invalida: " + selected_box
+      print "Casilla invalida: ", selected_box
     end
     return @turn, selected_box.to_i
   end

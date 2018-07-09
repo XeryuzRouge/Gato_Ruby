@@ -1,3 +1,5 @@
+require './exit'
+
 class CPU
 
   attr_accessor :current_combos
@@ -23,8 +25,15 @@ class CPU
   def check_play_options(possible_plays)
     temp_box = 0
     play = 0
+    exit_program = ExitLogic.new
+    key_esc = 27
 
     while play < possible_plays.length
+      exit_program.capture_key do |key|
+        if key == key_esc
+         return 27
+        end
+      end
       sleep(0.2)
       if possible_plays[play][0] >= 3
         temp_box = possible_plays[play]
