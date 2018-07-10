@@ -1,12 +1,14 @@
-require './exit'
+
+require './capture_key'
 
 class CPU
 
   attr_accessor :current_combos
+  attr_accessor :team
 
   def move
     row = 0
-    o_counter = 0
+    team_counter = 0
     play_options = []
     temp_box = 0
 
@@ -23,17 +25,18 @@ class CPU
   private
 
   def check_play_options(possible_plays)
+    @key = nil
+    instance_of_exit = CaptureKey.new
     temp_box = 0
     play = 0
-    exit_program = ExitLogic.new
     key_esc = 27
 
+    Thread.new do
+      @key = instance_of_exit.interrupt_cpu_and_exit
+    end
+
     while play < possible_plays.length
-      exit_program.capture_key do |key|
-        if key == key_esc
-         return 27
-        end
-      end
+          return key_esc if @key == key_esc
       sleep(0.2)
       if possible_plays[play][0] >= 3
         temp_box = possible_plays[play]
@@ -46,30 +49,32 @@ class CPU
   end
 
   def check_row(row)
+    enemy_team = " O " if @team == " X "
+    enemy_team = " X " if @team == " O "
     temp_box_row = 0
     row_element = 0
-    o_counter = 0
-    x_counter = 0
+    team_counter = 0
+    enemy_team_counter = 0
 
     while row_element < current_combos[row_element].length
-      if current_combos[row][row_element] == " O "
-        o_counter += 1
-      elsif current_combos[row][row_element] == " X "
-        x_counter += 1
+      if current_combos[row][row_element] == @team
+        team_counter += 1
+      elsif current_combos[row][row_element] == enemy_team
+        enemy_team_counter += 1
       else
         temp_box_row = current_combos[row][row_element]
       end
       row_element += 1
     end
 
-    return chosen_box(temp_box_row, o_counter, x_counter) if temp_box_row != 0
+    return chosen_box(temp_box_row, team_counter, enemy_team_counter) if temp_box_row != 0
 
   end
 
-  def chosen_box(temp_box_row, o_counter, x_counter)
-    if o_counter == 2
+  def chosen_box(temp_box_row, team_counter, enemy_team_counter)
+    if team_counter == 2
       return 4, temp_box_row
-    elsif x_counter == 2
+    elsif enemy_team_counter == 2
       return 3, temp_box_row
     else 
       return 1, temp_box_row

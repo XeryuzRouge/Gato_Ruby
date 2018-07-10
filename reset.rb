@@ -1,3 +1,4 @@
+
 class Reset
 
   def values (*args)

@@ -1,9 +1,11 @@
+
 class Interface
 
   attr_accessor :x_score
   attr_accessor :o_score
   attr_accessor :tie_score
-  attr_accessor :vs
+  attr_accessor :player1
+  attr_accessor :player2
 
   def initialize
     reset
@@ -13,6 +15,8 @@ class Interface
     @x_score = 0
     @o_score = 0
     @tie_score = 0
+    @player1 = nil
+    @player2 = nil
   end
 
   def draw_interface(turn)
@@ -21,17 +25,13 @@ class Interface
   end
 
   def main_menu
-    choice = 1
-    @vs = 0
     loop do
       system "cls"
-      print "Selecciona una opción valida\n\n" if choice != 1 && choice != 2 && choice != 3
-      print "Player vs Player (1) \nPlayer vs CPU (2) \nCPU vs CPU (3) \n"
-      choice = gets.to_i
-      if choice == 1 || choice == 2 || choice == 3
-        @vs = choice
-        break 
-      end
+      print "Jugador 1: Humano o CPU? (h, c)"
+      @player1 = gets.chomp
+      print "Jugador 2: Humano o CPU? (h, c)"
+      @player2 = gets.chomp
+      break
     end
   end
 
