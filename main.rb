@@ -1,22 +1,19 @@
-
 require 'io/console' 
 require_relative 'gameplay'
 require_relative 'board_status'
 require_relative 'interface'
 require_relative 'reset'
-require_relative 'capture_key' 
+require_relative 'exit_on_escape'
 
 gameplay = GamePlay.new
 board_status = BoardStatus.new
 interface = Interface.new
 reset = Reset.new
-input_key = CaptureKey.new
 
 interface.main_menu
 gameplay.turn_x = interface.player1
 gameplay.turn_y = interface.player2
 input_for_exit = 27
-selected_key = nil
 plays_results = []
 
 define_method :lets_reset do
@@ -24,41 +21,25 @@ define_method :lets_reset do
   interface.main_menu
   gameplay.turn_x = interface.player1
   gameplay.turn_x = interface.player2
-  selected_key = nil
 end
 
-  define_method :lets_input do
-      Thread.new do
-        print "."
-        selected_key = nil
-        print "selected_key es = ", selected_key
-        selected_key = input_key.lets_input
-        if selected_key == input_for_exit
-          lets_reset
-        else
-          gameplay.option_selected = selected_key
-      end
-    end
-  end
-
 begin
+  exit_on_escape = ExitOnEscape.new
+  exit_on_escape.run
+
   loop do
-    system "cls"
+    #system "cls"
     interface.draw_scoreboard
     board_status.draw_board
     interface.show_instructions(gameplay.turn)
 
     while gameplay.turn == gameplay.last_turn
-      lets_input
       if gameplay.human?
-        true until selected_key != nil
-        print "paso el until con: ", selected_key, " "
+        gameplay.option_selected = exit_on_escape.gets
         plays_results = gameplay.play(board_status.boxes)
-        #selected_key = nil
-
       else
         gameplay.input_cpu
-        plays_results = gameplay.play(board_status.boxes) if selected_key != input_for_exit
+        plays_results = gameplay.play(board_status.boxes)
       end
 
       gameplay.turn = plays_results[0] if plays_results[1]
@@ -81,7 +62,5 @@ begin
     end
 
     gameplay.last_turn = gameplay.turn
-
   end
-
 end
