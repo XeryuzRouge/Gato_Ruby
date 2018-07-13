@@ -5,13 +5,13 @@ class ExitOnEscape
     @input_key = CaptureKey.new 
   end
 
-  def run(game)
+  def run(game_thread)
     Thread.new do
       loop do
         key = @input_key.lets_input
         
         if is_esc?(key)
-          # game.restart
+          game_thread.exit
         else
           @not_esc = key
         end
@@ -32,6 +32,6 @@ class ExitOnEscape
   private
 
   def is_esc?(key)
-    false
+    key == 27
   end
 end

@@ -29,7 +29,6 @@ class GamePlay
 
   def play(boxes)
     selected_box = @option_selected
-    return selected_box if selected_box == 27
     if boxes[selected_box.to_i] == "   "
       boxes[selected_box.to_i] = @turn
       @turn = swap_turn(@turn)

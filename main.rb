@@ -30,7 +30,6 @@ class Game
     interface.main_menu
     gameplay.turn_x = interface.player1
     gameplay.turn_y = interface.player2
-    input_for_exit = 27
   end
 
   def game_loop
@@ -75,12 +74,10 @@ class Game
   end
 
   def restart
-      reset.values(gameplay, board_status, interface)
-      interface.main_menu
-      gameplay.turn_x = interface.player1
-      gameplay.turn_x = interface.player2
-
-    # kill current game and start another one
+    reset.values(gameplay, board_status, interface)
+    interface.main_menu
+    gameplay.turn_x = interface.player1
+    gameplay.turn_x = interface.player2
   end
 end
 
@@ -88,7 +85,9 @@ begin
   exit_on_escape = ExitOnEscape.new
   game = Game.new(exit_on_escape)
   
-  exit_on_escape.run(game)
-
-  game.start
+  game_thread = Thread.new do
+    game.start
+  end
+  exit_on_escape.run(game_thread)
+  game_thread.join
 end
