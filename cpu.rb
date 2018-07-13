@@ -1,42 +1,40 @@
 
-require './capture_key'
+require './board_status'
 
 class CPU
 
-  attr_accessor :current_combos
   attr_accessor :team
 
   def move
+    @current_combos = BoardStatus.win_combos
+    @forced_exit = 0
     row = 0
     team_counter = 0
     play_options = []
     temp_box = 0
 
-    while row < current_combos.length
+    while row < @current_combos.length
       if check_row(row) != nil
         play_options.insert(-1, check_row(row))
       end
       row += 1
     end
     temp_box = check_play_options(play_options)
+    return nil if @forced_exit == 1
     return temp_box
+  end
+
+  def reset
+    @forced_exit = 1
   end
 
   private
 
   def check_play_options(possible_plays)
-    @key = nil
-    instance_of_exit = CaptureKey.new
     temp_box = 0
     play = 0
-    key_esc = 27
-
-    Thread.new do
-      @key = instance_of_exit.interrupt_cpu_and_exit
-    end
 
     while play < possible_plays.length
-          return key_esc if @key == key_esc
       sleep(0.2)
       if possible_plays[play][0] >= 3
         temp_box = possible_plays[play]
@@ -56,13 +54,13 @@ class CPU
     team_counter = 0
     enemy_team_counter = 0
 
-    while row_element < current_combos[row_element].length
-      if current_combos[row][row_element] == @team
+    while row_element < @current_combos[row_element].length
+      if @current_combos[row][row_element] == @team
         team_counter += 1
-      elsif current_combos[row][row_element] == enemy_team
+      elsif @current_combos[row][row_element] == enemy_team
         enemy_team_counter += 1
       else
-        temp_box_row = current_combos[row][row_element]
+        temp_box_row = @current_combos[row][row_element]
       end
       row_element += 1
     end

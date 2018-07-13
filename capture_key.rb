@@ -6,6 +6,8 @@ rescue LoadError
 end
      
 class CaptureKey
+
+  @@key_esc = 27
      
   def capture_key
     if defined?  @@not_windows
@@ -21,41 +23,37 @@ class CaptureKey
 
   end
 
-  def exit_with_input
-
-    key_esc = 27
-    get_exit = "q"
+  def lets_input
+    @get_exit = "q"
 
     if defined? @@not_windows
       key = gets.chomp
-      print key
 
-      return key_esc if key == get_exit
+      return @@key_esc if key == @get_exit
       return key
+
     else
-      capture_key do |key|
-        if key == key_esc
-          return key_esc
-        else 
-          return key.chr
+      loop do
+        capture_key do |key|
+          if key == @@key_esc
+            return @@key_esc
+          else 
+            return key.chr
+          end
         end
       end
     end
+
   end
 
-  def interrupt_cpu_and_exit
-    key_esc = 27
-    get_exit = "q"
-
+  def interrupt_cpu_and_exit?
     if defined? @@not_windows
-          s = gets.chomp
-            return key_esc if s == get_exit
+      s = gets.chomp
+        return true
     else
-      capture_key do |key|
-        if key == key_esc
-          return key_esc
-        else 
-          return key.chr
+      loop do
+        capture_key do |key|
+          return true if key == @@key_esc
         end
       end
     end
