@@ -5,62 +5,90 @@ require_relative 'interface'
 require_relative 'reset'
 require_relative 'exit_on_escape'
 
-gameplay = GamePlay.new
-board_status = BoardStatus.new
-interface = Interface.new
-reset = Reset.new
+class Game
 
-interface.main_menu
-gameplay.turn_x = interface.player1
-gameplay.turn_y = interface.player2
-input_for_exit = 27
-plays_results = []
+  attr_reader :gameplay
+  attr_reader :board_status
+  attr_reader :interface
+  attr_reader :reset
+  attr_reader :input
 
-define_method :lets_reset do
-  reset.values(gameplay, board_status, interface)
-  interface.main_menu
-  gameplay.turn_x = interface.player1
-  gameplay.turn_x = interface.player2
+  def initialize(input)
+    @gameplay = GamePlay.new
+    @board_status = BoardStatus.new
+    @interface = Interface.new(input)
+    @reset = Reset.new
+    @input = input
+  end
+
+  def start
+    main_menu
+    game_loop
+  end
+
+  def main_menu
+    interface.main_menu
+    gameplay.turn_x = interface.player1
+    gameplay.turn_y = interface.player2
+    input_for_exit = 27
+  end
+
+  def game_loop
+    plays_results = []
+
+    loop do
+      system "cls"
+      interface.draw_scoreboard
+      board_status.draw_board
+      interface.show_instructions(gameplay.turn)
+
+      while gameplay.turn == gameplay.last_turn
+        if gameplay.human?
+          gameplay.option_selected = input.gets
+          plays_results = gameplay.play(board_status.boxes)
+        else
+          gameplay.input_cpu
+          plays_results = gameplay.play(board_status.boxes)
+        end
+
+        gameplay.turn = plays_results[0] if plays_results[1]
+      end
+
+      winner = board_status.check_it(plays_results[1], gameplay.last_turn)
+      gameplay.plays_counter += 1
+
+      if winner != nil
+        system "cls"
+        print "Ganador: #{gameplay.last_turn}\n\n"
+        interface.results(gameplay.last_turn)
+        board_status.draw_board
+        reset.values(gameplay, board_status)
+      end
+
+      if gameplay.plays_counter >= 9
+        interface.results("tie")
+        reset.values(gameplay, board_status)
+      end
+
+      gameplay.last_turn = gameplay.turn
+    end
+  end
+
+  def restart
+      reset.values(gameplay, board_status, interface)
+      interface.main_menu
+      gameplay.turn_x = interface.player1
+      gameplay.turn_x = interface.player2
+
+    # kill current game and start another one
+  end
 end
 
 begin
   exit_on_escape = ExitOnEscape.new
-  exit_on_escape.run
+  game = Game.new(exit_on_escape)
+  
+  exit_on_escape.run(game)
 
-  loop do
-    #system "cls"
-    interface.draw_scoreboard
-    board_status.draw_board
-    interface.show_instructions(gameplay.turn)
-
-    while gameplay.turn == gameplay.last_turn
-      if gameplay.human?
-        gameplay.option_selected = exit_on_escape.gets
-        plays_results = gameplay.play(board_status.boxes)
-      else
-        gameplay.input_cpu
-        plays_results = gameplay.play(board_status.boxes)
-      end
-
-      gameplay.turn = plays_results[0] if plays_results[1]
-    end
-
-    winner = board_status.check_it(plays_results[1], gameplay.last_turn)
-    gameplay.plays_counter += 1
-
-    if winner != nil
-      system "cls"
-      print "Ganador: #{gameplay.last_turn}\n\n"
-      interface.results(gameplay.last_turn)
-      board_status.draw_board
-      reset.values(gameplay, board_status)
-    end
-
-    if gameplay.plays_counter >= 9
-      interface.results("tie")
-      reset.values(gameplay, board_status)
-    end
-
-    gameplay.last_turn = gameplay.turn
-  end
+  game.start
 end

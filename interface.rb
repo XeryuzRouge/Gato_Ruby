@@ -8,8 +8,10 @@ class Interface
   attr_accessor :tie_score
   attr_accessor :player1
   attr_accessor :player2
+  attr_reader :input
 
-  def initialize
+  def initialize(input)
+    @input = input
     reset
   end
 
@@ -29,10 +31,10 @@ class Interface
   def main_menu
     loop do
       system "cls"
-      print "Jugador 1: Humano o CPU? (h, c)"
-      @player1 = gets.chomp
+      print "Jugador 1: Humano o CPU? (h, c) \n"
+      @player1 = input.gets.chomp
       print "Jugador 2: Humano o CPU? (h, c)"
-      @player2 = gets.chomp
+      @player2 = input.gets.chomp
       break
     end
   end
