@@ -28,13 +28,31 @@ class Interface
     print "\nSelecciona una casilla: "
   end
 
+  def input_player_filter
+    tries_counter = 0
+    loop do 
+      player = input.gets.chomp 
+      return player if player == "h" || player == "c"
+      print "h o c...\n" if tries_counter <=1
+      print "la tecla h, o  o la tecla c...\n" if tries_counter >=2 && tries_counter <=4
+      print "neta...\n" if tries_counter == 5
+      print "...\n" if tries_counter >= 6 && tries_counter <= 8
+      if tries_counter >= 9
+        print "ya bye\n"
+        exit
+      end
+      tries_counter += 1
+    end
+  end
+
   def main_menu
     loop do
       system "cls"
       print "Jugador 1: Humano o CPU? (h, c) \n"
-      @player1 = input.gets.chomp
+        @player1 = input_player_filter 
       print "Jugador 2: Humano o CPU? (h, c)"
-      @player2 = input.gets.chomp
+        @player2 = input_player_filter
+      print "asi quedaron: \n#{@player1}"
       break
     end
   end
