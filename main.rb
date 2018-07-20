@@ -17,9 +17,9 @@ class Game
   def initialize(input)
     commands = ARGV
     @lang = commands[1] if commands[0] == "-lang"
-    @gameplay = GamePlay.new
-    @board_status = BoardStatus.new
     @interface = Interface.new(input, @lang)
+    @gameplay = GamePlay.new(@interface)
+    @board_status = BoardStatus.new
     @reset = Reset.new
     @input = input
   end
@@ -61,7 +61,6 @@ class Game
 
       if winner != nil
         system "cls"
-        print "Ganador: #{gameplay.last_turn}\n\n"
         interface.results(gameplay.last_turn)
         board_status.draw_board
         reset.values(gameplay, board_status)

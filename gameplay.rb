@@ -1,6 +1,7 @@
 
-require './capture_key'
-require './cpu'
+require_relative 'capture_key'
+require_relative 'cpu'
+require_relative 'interface'
 
 class GamePlay
 
@@ -15,7 +16,8 @@ class GamePlay
   @@o_character = " O "
   @@cpu = CPU.new
 
-  def initialize
+  def initialize(interface)
+    @interface = interface
     reset
   end
 
@@ -33,7 +35,7 @@ class GamePlay
       boxes[selected_box.to_i] = @turn
       @turn = swap_turn(@turn)
     else
-      print "Casilla invalida: ", selected_box, ", que es eso"
+      @interface.invalid_box_message(selected_box)
     end
     return @turn, selected_box.to_i
   end

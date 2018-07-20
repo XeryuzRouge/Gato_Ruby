@@ -27,6 +27,10 @@ class Interface
     @player2 = nil
   end
 
+  def invalid_box_message(selected_box)
+    print "#{msg.invalid_box_message("invalid box")}", selected_box, "#{msg.invalid_box_message("whats up with that")}"
+  end
+
   def show_instructions(turn)
     print "\n#{msg.show_instructions("turn of")}", "#{turn}\n\n"
     print "\n#{msg.show_instructions("select a box")} "
