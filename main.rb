@@ -12,11 +12,14 @@ class Game
   attr_reader :interface
   attr_reader :reset
   attr_reader :input
+  attr_reader :lang
 
   def initialize(input)
+    commands = ARGV
+    @lang = commands[1] if commands[0] == "-lang"
     @gameplay = GamePlay.new
     @board_status = BoardStatus.new
-    @interface = Interface.new(input)
+    @interface = Interface.new(input, @lang)
     @reset = Reset.new
     @input = input
   end

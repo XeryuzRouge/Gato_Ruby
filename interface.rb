@@ -1,5 +1,7 @@
 
-require './draw_board'
+require_relative 'draw_board'
+require_relative 'languages'
+
 
 class Interface
 
@@ -9,10 +11,12 @@ class Interface
   attr_accessor :player1
   attr_accessor :player2
   attr_reader :input
+  attr_reader :msg
 
-  def initialize(input)
+  def initialize(input, lang)
     @input = input
     reset
+    @msg = Languages.new(lang)
   end
 
   def reset
@@ -24,8 +28,8 @@ class Interface
   end
 
   def show_instructions(turn)
-    print "\nturno de:", "#{turn}\n\n"
-    print "\nSelecciona una casilla: "
+    print "\n#{msg.show_instructions(1)}", "#{turn}\n\n"
+    print "\n#{msg.show_instructions(2)} "
   end
 
   def input_player_filter
@@ -33,12 +37,12 @@ class Interface
     loop do 
       player = input.gets.chomp 
       return player if player == "h" || player == "c"
-      print "h o c...\n" if tries_counter <=1
-      print "la tecla h, o  o la tecla c...\n" if tries_counter >=2 && tries_counter <=4
-      print "neta...\n" if tries_counter == 5
-      print "...\n" if tries_counter >= 6 && tries_counter <= 8
+      print "\n#{msg.input_player_filter(1)}" if tries_counter <=1
+      print "\n#{msg.input_player_filter(2)}" if tries_counter >=2 && tries_counter <=4
+      print "\n#{msg.input_player_filter(3)}" if tries_counter == 5
+      print "\n#{msg.input_player_filter(4)}" if tries_counter >= 6 && tries_counter <= 8
       if tries_counter >= 9
-        print "ya bye\n"
+        print "\n#{msg.input_player_filter(5)}"
         exit
       end
       tries_counter += 1
@@ -48,17 +52,16 @@ class Interface
   def main_menu
     loop do
       system "cls"
-      print "Jugador 1: Humano o CPU? (h, c) \n"
+      print "\n#{msg.main_menu(1)}"
         @player1 = input_player_filter 
-      print "Jugador 2: Humano o CPU? (h, c)"
+      print "\n#{msg.main_menu(2)}"
         @player2 = input_player_filter
-      print "asi quedaron: \n#{@player1}"
       break
     end
   end
 
   def draw_scoreboard
-    print "Marcador:\nX=#{x_score}  O=#{o_score}\nEmpates=#{tie_score}\n\n"
+    print "#{msg.draw_scoreboard(1)}X=#{x_score}  O=#{o_score}\n#{msg.draw_scoreboard(2)}#{tie_score}\n\n"
   end
 
   def results(winner)
