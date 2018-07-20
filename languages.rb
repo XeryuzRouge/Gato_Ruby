@@ -11,15 +11,15 @@ class Languages
   def show_instructions(msg)
     case @lang
     when "es"
-      return "turno de:" if msg == 1
-      return "selecciona una caja:"  if msg == 2
+      return "turno de:" if msg == "turn of"
+      return "selecciona una caja:"  if msg == "select a box"
     else
-      return "turn of:" if msg == 1
-      return "select a box:"  if msg == 2
+      return "turn of:" if msg == "turn of"
+      return "select a box:"  if msg == "select a box"
     end
   end
 
-  def main_menu(msg)
+  def human_or_cpu(msg)
     case @lang
       when "es"
       return "Jugador #{msg}: Humano o CPU? (h, c)" 
@@ -28,7 +28,7 @@ class Languages
     end
   end
 
-  def input_player_filter(msg)
+  def input_player_filter_fail_msg(msg)
     case @lang
       when "es"
         return "h o c...:\n" if msg == 1
@@ -48,11 +48,11 @@ class Languages
   def draw_scoreboard(msg)
     case @lang
       when "es"
-        return "Marcador:\n" if msg == 1
-        return "Empates=" if msg == 2
+        return "Marcador:\n" if msg == "score"
+        return "Empates=" if msg == "ties"
       else
-        return "Score:\n" if msg == 1
-        return "Ties=" if msg == 2
+        return "Score:\n" if msg == "score"
+        return "Ties=" if msg == "ties"
     end
     
   end
