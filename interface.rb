@@ -1,7 +1,5 @@
 
-require_relative 'draw_board'
 require_relative 'languages'
-
 
 class Interface
 
@@ -13,10 +11,10 @@ class Interface
   attr_reader :input
   attr_reader :msg
 
-  def initialize(input, lang)
+  def initialize(input, language)
     @input = input
     reset
-    @msg = Languages.new(lang)
+    @msg = Languages.new(language)
   end
 
   def reset
@@ -65,12 +63,14 @@ class Interface
   end
 
   def draw_scoreboard
+    system "cls"
     print "#{msg.draw_scoreboard("score")}X=#{x_score}  O=#{o_score}\n#{msg.draw_scoreboard("ties")}#{tie_score}\n\n"
   end
 
-  def results(winner)
-    @x_score += 1 if winner == " X "
-    @o_score += 1 if winner == " O "
+  def results(winner, icon_x, icon_o)
+    system "cls"
+    @x_score += 1 if winner == icon_x
+    @o_score += 1 if winner == icon_o
     @tie_score += 1 if winner == "tie"
   end
 

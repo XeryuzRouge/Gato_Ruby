@@ -1,14 +1,14 @@
 
 class Languages
 
-  attr_reader :lang
+  attr_reader :language
 
-  def initialize(lang)
-    @lang = lang
+  def initialize(language)
+    @language = language
   end
 
   def invalid_box_message(msg)
-    case lang
+    case language
     when "es"
       return "\ncasilla invalida: " if msg == "invalid box"
       return ", que onda con eso" if msg == "whats up with that"
@@ -21,7 +21,7 @@ class Languages
 
  
   def show_instructions(msg)
-    case lang
+    case language
     when "es"
       return "turno de:" if msg == "turn of"
       return "selecciona una caja:"  if msg == "select a box"
@@ -32,7 +32,7 @@ class Languages
   end
 
   def human_or_cpu(msg)
-    case lang
+    case language
       when "es"
       return "Jugador #{msg}: Humano o CPU? (h, c)" 
     else
@@ -41,7 +41,7 @@ class Languages
   end
 
   def input_player_filter_fail_msg(msg)
-    case lang
+    case language
       when "es"
         return "h o c...:\n" if msg == 1
         return "la tecla h, o la tecla c...:\n" if msg == 2
@@ -58,7 +58,7 @@ class Languages
   end
 
   def draw_scoreboard(msg)
-    case lang
+    case language
       when "es"
         return "Marcador:\n" if msg == "score"
         return "Empates=" if msg == "ties"

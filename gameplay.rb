@@ -1,7 +1,6 @@
 
 require_relative 'capture_key'
 require_relative 'cpu'
-require_relative 'interface'
 
 class GamePlay
 
@@ -11,18 +10,22 @@ class GamePlay
   attr_accessor :turn_y
   attr_accessor :plays_counter
   attr_accessor :option_selected
-
-  @@x_character = " X "
-  @@o_character = " O "
+  attr_accessor :icon_x
+  attr_accessor :icon_o
+  attr_accessor :empty
+  
   @@cpu = CPU.new
 
   def initialize(interface)
+    @icon_x = @@cpu.icon_x
+    @icon_o = @@cpu.icon_o
+    @empty = @@cpu.empty
     @interface = interface
     reset
   end
 
   def reset
-    @turn = @@x_character
+    @turn = icon_x
     @last_turn = @turn
     @plays_counter = 0
     @option_selected = nil
@@ -31,7 +34,7 @@ class GamePlay
 
   def play(boxes)
     selected_box = @option_selected
-    if boxes[selected_box.to_i] == "   "
+    if boxes[selected_box.to_i] == empty
       boxes[selected_box.to_i] = @turn
       @turn = swap_turn(@turn)
     else
@@ -41,8 +44,8 @@ class GamePlay
   end
 
   def human?
-    return true if (turn == " X " && turn_x == "h") || (turn == " O " && turn_y == "h")
-    return false if(turn == " X " && turn_x == "c") || (turn == " O " && turn_y == "c")
+    return true if (turn == icon_x && turn_x == "h") || (turn == icon_o && turn_y == "h")
+    return false if(turn == icon_x && turn_x == "c") || (turn == icon_o && turn_y == "c")
   end
 
   def input_cpu
@@ -53,10 +56,10 @@ class GamePlay
   private
 
   def swap_turn(current_turn)
-    if current_turn == @@x_character
-      current_turn = @@o_character
+    if current_turn == icon_x
+      current_turn = icon_o
     else
-      current_turn = @@x_character
+      current_turn = icon_x
     end
     return current_turn
   end

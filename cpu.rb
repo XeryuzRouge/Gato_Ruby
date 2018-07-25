@@ -1,9 +1,20 @@
 
-require './board_status'
+require_relative 'board_status'
 
 class CPU
 
   attr_accessor :team
+  attr_accessor :icon_x
+  attr_accessor :icon_o
+  attr_accessor :empty
+
+  def initialize
+    board = BoardStatus.new
+    @icon_x = board.icon_x
+    @icon_o = board.icon_o
+    @empty = board.empty
+    
+  end
 
   def move
     @current_combos = BoardStatus.win_combos
@@ -47,8 +58,8 @@ class CPU
   end
 
   def check_row(row)
-    enemy_team = " O " if @team == " X "
-    enemy_team = " X " if @team == " O "
+    enemy_team = icon_o if @team == icon_x
+    enemy_team = icon_x if @team == icon_o
     temp_box_row = 0
     row_element = 0
     team_counter = 0

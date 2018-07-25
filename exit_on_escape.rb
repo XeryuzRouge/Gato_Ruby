@@ -1,8 +1,8 @@
-require_relative "./capture_key"
+require_relative "capture_key"
 
 class ExitOnEscape
   def initialize
-    @input_key = CaptureKey.new 
+    @input_key = CaptureKey.new
   end
 
   def run(game_thread)

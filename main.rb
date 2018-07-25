@@ -12,12 +12,12 @@ class Game
   attr_reader :interface
   attr_reader :reset
   attr_reader :input
-  attr_reader :lang
+  attr_reader :language
 
   def initialize(input)
     commands = ARGV
-    @lang = commands[1] if commands[0] == "-lang"
-    @interface = Interface.new(input, @lang)
+    @language = commands[1] if commands[0] == "-lang"
+    @interface = Interface.new(input, @language)
     @gameplay = GamePlay.new(@interface)
     @board_status = BoardStatus.new
     @reset = Reset.new
@@ -39,7 +39,6 @@ class Game
     plays_results = []
 
     loop do
-      system "cls"
       interface.draw_scoreboard
       board_status.draw_board
       interface.show_instructions(gameplay.turn)
@@ -56,18 +55,17 @@ class Game
         gameplay.turn = plays_results[0] if plays_results[1]
       end
 
-      winner = board_status.check_it(plays_results[1], gameplay.last_turn)
+      winner = board_status.check_for_winner(plays_results[1], gameplay.last_turn)
       gameplay.plays_counter += 1
 
       if winner != nil
-        system "cls"
-        interface.results(gameplay.last_turn)
+        interface.results(gameplay.last_turn, board_status.icon_x, board_status.icon_o)
         board_status.draw_board
         reset.values(gameplay, board_status)
       end
 
       if gameplay.plays_counter >= 9
-        interface.results("tie")
+        interface.results("tie", board_status.icon_x, board_status.icon_o)
         reset.values(gameplay, board_status)
       end
 
