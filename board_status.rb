@@ -11,7 +11,7 @@ class BoardStatus
   attr_accessor :board_style
 
   def initialize
-    game_icons(1)
+    game_icons(2)
     reset
   end
 
@@ -46,7 +46,6 @@ class BoardStatus
   end
 
   def check_for_winner(selected_box, player)
-
     i = 0
     while i < @@win_combos.length
     j = 0

@@ -4,6 +4,7 @@ require_relative 'board_status'
 require_relative 'interface'
 require_relative 'reset'
 require_relative 'exit_on_escape'
+require_relative 'command_options'
 
 class Game
 
@@ -12,12 +13,9 @@ class Game
   attr_reader :interface
   attr_reader :reset
   attr_reader :input
-  attr_reader :language
 
   def initialize(input)
-    commands = ARGV
-    @language = commands[1] if commands[0] == "-lang"
-    @interface = Interface.new(input, @language)
+    @interface = Interface.new(input)
     @gameplay = GamePlay.new(@interface)
     @board_status = BoardStatus.new
     @reset = Reset.new
@@ -36,27 +34,15 @@ class Game
   end
 
   def game_loop
-    plays_results = []
 
     loop do
       interface.draw_scoreboard
       board_status.draw_board
       interface.show_instructions(gameplay.turn)
 
-      while gameplay.turn == gameplay.last_turn
-        if gameplay.human?
-          gameplay.option_selected = input.gets
-          plays_results = gameplay.play(board_status.boxes)
-        else
-          gameplay.input_cpu
-          plays_results = gameplay.play(board_status.boxes)
-        end
+      gameplay.turn_base_TEMPORAL(input, board_status.boxes)
 
-        gameplay.turn = plays_results[0] if plays_results[1]
-      end
-
-      winner = board_status.check_for_winner(plays_results[1], gameplay.last_turn)
-      gameplay.plays_counter += 1
+      winner = board_status.check_for_winner(gameplay.option_selected, gameplay.last_turn)
 
       if winner != nil
         interface.results(gameplay.last_turn, board_status.icon_x, board_status.icon_o)
@@ -82,6 +68,8 @@ class Game
 end
 
 begin
+
+  CommandOptions.new
   exit_on_escape = ExitOnEscape.new
   game = Game.new(exit_on_escape)
   

@@ -11,10 +11,10 @@ class Interface
   attr_reader :input
   attr_reader :msg
 
-  def initialize(input, language)
+  def initialize(input)
     @input = input
     reset
-    @msg = Languages.new(language)
+    @msg = Languages.new
   end
 
   def reset

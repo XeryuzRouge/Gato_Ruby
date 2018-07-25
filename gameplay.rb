@@ -13,7 +13,7 @@ class GamePlay
   attr_accessor :icon_x
   attr_accessor :icon_o
   attr_accessor :empty
-  
+
   @@cpu = CPU.new
 
   def initialize(interface)
@@ -34,8 +34,8 @@ class GamePlay
 
   def play(boxes)
     selected_box = @option_selected
-    if boxes[selected_box.to_i] == empty
-      boxes[selected_box.to_i] = @turn
+    if boxes[selected_box] == empty
+      boxes[selected_box] = @turn
       @turn = swap_turn(@turn)
     else
       @interface.invalid_box_message(selected_box)
@@ -51,6 +51,21 @@ class GamePlay
   def input_cpu
     @@cpu.team = turn
     @option_selected = @@cpu.move
+  end
+
+  def turn_base_TEMPORAL(input, boxes)
+    plays_results = []
+    while turn == last_turn
+      if human?
+        @option_selected = input.gets.to_i
+      else
+        input_cpu
+      end
+      plays_results = play(boxes)
+      turn = plays_results[0] if plays_results[1]
+      @plays_counter += 1
+      return plays_results
+    end
   end
 
   private

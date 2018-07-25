@@ -1,13 +1,16 @@
 
+require_relative 'languages'
+
 class CommandOptions
 
-  def initialize(input)
-    command = input[0]
-    command_args = input[1]
+  def initialize
+    commands = ARGV
+    command = commands[0]
+    command_args = commands[1]
 
     case command
-      1 when "-lang"
+      when "-lang"
+       Languages.language(command_args)
     end
   end
-
 end
