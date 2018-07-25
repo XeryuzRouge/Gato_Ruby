@@ -11,7 +11,7 @@ class BoardStatus
   attr_accessor :board_style
 
   def initialize
-    game_icons(2)
+    game_icons(1)
     reset
   end
 
