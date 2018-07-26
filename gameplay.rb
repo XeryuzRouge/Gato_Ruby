@@ -49,8 +49,7 @@ class GamePlay
   end
 
   def input_cpu
-    @@cpu.team = turn
-    @option_selected = @@cpu.move
+    @option_selected = @@cpu.move(turn)
   end
 
   def turn_base_TEMPORAL(input, boxes)

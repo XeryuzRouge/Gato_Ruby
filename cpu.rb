@@ -1,9 +1,10 @@
 
 require_relative 'board_status'
+require_relative 'check_cpu_plays'
+require_relative 'evaluate_rows_cpu'
 
 class CPU
 
-  attr_accessor :team
   attr_accessor :icon_x
   attr_accessor :icon_o
   attr_accessor :empty
@@ -13,81 +14,35 @@ class CPU
     @icon_x = board.icon_x
     @icon_o = board.icon_o
     @empty = board.empty
-    
-  end
-
-  def move
-    @current_combos = BoardStatus.win_combos
-    @forced_exit = 0
-    row = 0
-    team_counter = 0
-    play_options = []
-    temp_box = 0
-
-    while row < @current_combos.length
-      if check_row(row) != nil
-        play_options.insert(-1, check_row(row))
-      end
-      row += 1
-    end
-    temp_box = check_play_options(play_options)
-    return nil if @forced_exit == 1
-    return temp_box
   end
 
   def reset
     @forced_exit = 1
   end
 
-  private
+  def move(current_turn)
+    team = current_turn
+    enemy_team = icon_o if team == icon_x
+    enemy_team = icon_x if team == icon_o
 
-  def check_play_options(possible_plays)
-    temp_box = 0
-    play = 0
+    evaluate_rows = EvaluateRowsCPU.new
+    cpu_options = CheckCPUPlays.new
+    current_combos = BoardStatus.win_combos
 
-    while play < possible_plays.length
-      sleep(0.2)
-      if possible_plays[play][0] >= 3
-        temp_box = possible_plays[play]
-        return temp_box[1]
+    @forced_exit = 0
+    row = 0
+    play_options = []
+    possible_selection = 0
+
+    while row < current_combos.length
+      if evaluate_rows.check_row(row, current_combos, enemy_team, team) != nil
+        play_options.insert(-1, evaluate_rows.check_row(row, current_combos, enemy_team, team))
       end
-      play += 1
+      row += 1
     end
-    temp_box = possible_plays.sample
-    return temp_box[1]
-  end
-
-  def check_row(row)
-    enemy_team = icon_o if @team == icon_x
-    enemy_team = icon_x if @team == icon_o
-    temp_box_row = 0
-    row_element = 0
-    team_counter = 0
-    enemy_team_counter = 0
-
-    while row_element < @current_combos[row_element].length
-      if @current_combos[row][row_element] == @team
-        team_counter += 1
-      elsif @current_combos[row][row_element] == enemy_team
-        enemy_team_counter += 1
-      else
-        temp_box_row = @current_combos[row][row_element]
-      end
-      row_element += 1
-    end
-
-    return chosen_box(temp_box_row, team_counter, enemy_team_counter) if temp_box_row != 0
-
-  end
-
-  def chosen_box(temp_box_row, team_counter, enemy_team_counter)
-    if team_counter == 2
-      return 4, temp_box_row
-    elsif enemy_team_counter == 2
-      return 3, temp_box_row
-    else 
-      return 1, temp_box_row
-    end
+    possible_selection = cpu_options.check_play_options(play_options)
+    return nil if @forced_exit == 1
+    return possible_selection
   end
 
 end
